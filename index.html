@@ -14,14 +14,13 @@
             width: 900px; background: rgba(30, 41, 59, 0.95); padding: 40px;
             border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.8);
             border: 2px solid #334155; backdrop-filter: blur(10px);
-            position: relative; /* 📋 등급 기준 팝업 배치를 위한 상위 기준점 설정 */
+            position: relative; /* 📋 등급 기준 팝업 배치를 위한 기준점 */
         }
         .main-dash {
             display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
             background: #020617; padding: 20px; border-radius: 15px; margin-bottom: 25px;
         }
         
-        /* 💡 안내 가이드 박스 스타일 */
         .info-guide-box {
             background: rgba(15, 23, 42, 0.6);
             border: 1px solid #475569;
@@ -61,7 +60,7 @@
         .action-red { background: #991b1b; border-bottom: 4px solid #b91c1c; }
         .btn-group strong { font-size: 24px; margin-right: 10px; color: #fbbf24; }
 
-        /* 📋 [신규 추가] 등급 기준 확인 버튼 및 오버레이 토글 레이어 스타일 */
+        /* 📋 클릭 시 나오는 등급 가이드 레이어 팝업 스타일 */
         .grade-btn {
             background: #1e293b; color: #38bdf8; padding: 8px 16px; border-radius: 12px;
             font-size: 16px; font-weight: bold; cursor: pointer; border: 1px solid #38bdf8;
@@ -94,16 +93,13 @@
     <div id="grade-info-menu" class="grade-overlay-box">
         <h3>📊 20턴 정상 종료 시 최종 등급 평정 기준</h3>
         <div class="grade-row">
-            <span class="grade-label" style="color:#facc15;">S 등급:</span> 생존율 99% 이상 + CP 1250 이상<br>
-            <span style="color:#f87171; font-size:12px; font-weight:bold;">⚠️ [핵심 조건] 폭염·한파·해수면·생태계 파괴지수 모두 각각 10% 이하</span>
+            <span class="grade-label" style="color:#facc15;">S 등급:</span> 생존율 99% 이상 + CP 1250 이상
         </div>
         <div class="grade-row">
-            <span class="grade-label" style="color:#60a5fa;">A 등급:</span> 생존율 85% 이상 + CP 950 이상<br>
-            <span style="color:#94a3b8; font-size:12px;">⚠️ [지표 조건] 4대 기후재난 지표가 각각 25% 이하</span>
+            <span class="grade-label" style="color:#60a5fa;">A 등급:</span> 생존율 85% 이상 + CP 950 이상
         </div>
         <div class="grade-row">
-            <span class="grade-label" style="color:#34d399;">B 등급:</span> 생존율 65% 이상 + CP 450 이상<br>
-            <span style="color:#94a3b8; font-size:12px;">⚠️ [지표 조건] 4대 기후재난 지표가 각각 50% 미만</span>
+            <span class="grade-label" style="color:#34d399;">B 등급:</span> 생존율 65% 이상 + CP 450 이상
         </div>
         <div class="grade-row">
             <span class="grade-label" style="color:#cbd5e1;">C 등급:</span> 생존율 45% 이상 + CP 150 이상
@@ -112,7 +108,7 @@
             <span class="grade-label" style="color:#a8a29e;">E 등급:</span> 생존율 20% 이상 또는 CP -500 이상
         </div>
         <div class="grade-row">
-            <span class="grade-label" style="color:#ef4444;">F 등급:</span> 조건 미달 및 기후 리스크 방치(지표 100% 도달) 시 발생
+            <span class="grade-label" style="color:#ef4444;">F 등급:</span> 조건 미달 및 지표 100% 도달 시 발생
         </div>
         <button onclick="toggleGradeMenu()" style="padding: 10px; font-size: 14px; background: #334155; border: none; width: 100%; border-radius: 8px; text-align: center; margin-top: 10px; color: white; cursor: pointer;">가이드 창 닫기</button>
     </div>
@@ -141,10 +137,116 @@
     <div id="choices" class="btn-group"></div>
 </div>
 
-<script type="module" src="/client-init.js"></script>
+<script type="module">
+    import { ClimateSystemModel } from './models/model.js';
+    import { ClimateSimulationService } from './services/service.js';
+    import { SimulationDataUtil } from './utils/util.js';
+    import { SimulationRouter } from './routes/route.js';
+
+    const model = new ClimateSystemModel();
+    model.budget = 3000; // 💡 밸런스 패치값 주입
+
+    const service = new ClimateSimulationService(model);
+
+    const uiRenderer = {
+        updateDashboard() {
+            document.getElementById('v-level').textContent = model.currentTurn + ' / ' + service.maxTurns + ' 턴';
+            document.getElementById('v-budget').textContent = model.budget + '억';
+            document.getElementById('v-cp').textContent = model.climatePoints + ' CP';
+            document.getElementById('v-survival').textContent = model.globalSurvival + '%';
+
+            document.getElementById('v-heatwave').textContent = model.threats.heatwave + '%';
+            document.getElementById('v-coldwave').textContent = model.threats.coldwave + '%';
+            document.getElementById('v-sealevel').textContent = model.threats.seaLevel + '%';
+            document.getElementById('v-eco').textContent = model.threats.ecoDestruction + '%';
+        },
+        renderNextStep() {
+            this.updateDashboard();
+            const scenario = SimulationDataUtil.getScenarioByTurn(model.currentTurn);
+            if (!scenario) return;
+
+            document.getElementById('level-title').textContent = scenario.title;
+            document.getElementById('situation').textContent = scenario.situation;
+            
+            const btnGroup = document.getElementById('choices');
+            btnGroup.innerHTML = '';
+
+            const isEventTurn = (model.currentTurn === 7 || model.currentTurn === 14);
+
+            scenario.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = opt.id === 'A' ? 'action-green' : 'action-red';
+                
+                let buttonText = opt.text;
+                if (isEventTurn) {
+                    buttonText = "⚠️ [이벤트 격변 2배 적용] " + buttonText;
+                }
+
+                btn.innerHTML = '<strong>' + opt.id + '안:</strong> ' + buttonText;
+                btn.addEventListener('click', () => router.handleUserChoice(opt));
+                btnGroup.appendChild(btn);
+            });
+        },
+        renderEndGame(resultData) {
+            this.updateDashboard();
+            const container = document.getElementById('sim-container');
+            const body = document.body;
+            
+            const grade = resultData.grade || "F";
+            const message = resultData.msg || "시뮬레이션이 종료되었습니다.";
+
+            let bgColor = "#0f172a";
+            let accentColor = "#38bdf8";
+
+            if (grade === "S") {
+                bgColor = "#451a03"; 
+                accentColor = "#facc15"; 
+            } else if (grade === "A" || grade === "B" || grade === "C") {
+                bgColor = "#1e3a8a"; 
+                accentColor = "#60a5fa";
+            } else if (grade === "E") {
+                bgColor = "#292524"; 
+                accentColor = "#a8a29e";
+            } else {
+                bgColor = "#7f1d1d"; 
+                accentColor = "#f87171";
+            }
+
+            body.style.transition = "background 1.5s ease";
+            body.style.backgroundColor = bgColor;
+            container.style.borderColor = accentColor;
+            container.style.boxShadow = "0 0 80px " + accentColor;
+
+            if (grade === "S") {
+                container.style.background = "linear-gradient(145deg, #1e1b4b, #451a03)";
+            }
+
+            document.getElementById('level-title').textContent = grade === "S" ? "🏆 전지구적 기후 통제 신화 달성" : "📜 글로벌 기후 통제 최종 판정";
+            document.getElementById('level-title').style.fontSize = "38px";
+            document.getElementById('level-title').style.color = accentColor;
+
+            const situationBox = document.getElementById('situation');
+            situationBox.style.borderLeft = "10px solid " + accentColor;
+            situationBox.style.padding = "40px";
+            situationBox.innerHTML = `<div style="font-size: 26px; line-height: 1.6; font-weight: 800; color: #ffffff; text-align:center;">${message}</div>`;
+
+            const btnBg = grade === "S" ? "#facc15" : accentColor;
+            const btnColor = grade === "S" ? "#000000" : "#020617";
+
+            document.getElementById('choices').innerHTML = `
+                <button onclick="window.location.reload()" style="text-align:center; background:${btnBg}; color:${btnColor}; font-size:24px; font-weight:900; width:100%; height:80px; border-radius:15px; border:none; cursor:pointer; box-shadow: 0 4px 20px rgba(250,204,21,0.4);">
+                    영광스러운 타임라인 저장 후 다시 시작하기
+                </button>
+            `;
+        }
+    };
+
+    const router = new SimulationRouter(service, uiRenderer);
+    uiRenderer.renderNextStep();
+</script>
 
 <script>
-    // 💡 등급 창을 깔끔하게 열고 닫아주는 로컬 토글 함수
+    // 💡 토글 함수는 일반 전역 스코프에서 처리하도록 따로 분리
     function toggleGradeMenu() {
         const menu = document.getElementById('grade-info-menu');
         if (menu.style.display === 'block') {

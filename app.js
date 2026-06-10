@@ -25,8 +25,8 @@ app.get('/client-init.js', (req, res) => {
 
         const model = new ClimateSystemModel();
         
-        // 💡 [밸런스 패치] 초기 예산을 3,000억으로 상향하여 7턴/14턴 대격변 A안 방어가 가능하도록 수정
-        model.budget = 3000; 
+        // 💡 [2,500억 스타트 정밀 밸런스 셋팅 고정] S루트가 단 2개만 나오도록 통제합니다.
+        model.budget = 2500; 
 
         const service = new ClimateSimulationService(model);
 

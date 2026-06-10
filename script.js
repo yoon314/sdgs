@@ -26,7 +26,7 @@ app.get('/client-init.js', (req, res) => {
         const model = new ClimateSystemModel();
         
         // 💡 [2,500억 스타트 정밀 밸런스 셋팅 고정] S루트가 단 2개만 나오도록 통제합니다.
-        model.budget = 2500; 
+        // model.budget = 2500; 
 
         const service = new ClimateSimulationService(model);
 

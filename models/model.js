@@ -2,7 +2,7 @@
 export class ClimateSystemModel {
     constructor() {
         this.currentTurn = 1;
-        this.budget = 1500; // 기초값 (app.js에서 주입하여 오버라이딩 가능)
+        this.budget = 2500; // 기초값 (app.js에서 주입하여 오버라이딩 가능)
         this.climatePoints = 0;
         this.globalSurvival = 100;
 

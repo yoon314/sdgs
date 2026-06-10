@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>SDGs 13 복합 기후위기 통제 시스템</title>
+    <style>
+        body {
+            margin: 0; background: #0f172a; color: #f8fafc;
+            font-family: system-ui, sans-serif;
+            display: flex; justify-content: center; align-items: center; height: 100vh;
+        }
+        #sim-container {
+            width: 750px; background: #1e293b; padding: 30px;
+            border-radius: 16px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+            border: 1px solid #334155;
+        }
+        .main-dash {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+            background: #020617; padding: 15px; border-radius: 10px; margin-bottom: 20px;
+        }
+        .threat-dash {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+            background: #0f172a; padding: 12px; border-radius: 8px; margin-bottom: 25px;
+            border: 1px dashed #475569;
+        }
+        .metric { font-size: 13px; color: #94a3b8; text-align: center;}
+        .metric span { font-size: 22px; font-weight: bold; color: #fff; display: block; margin-top: 5px; }
+        .danger span { color: #f87171; }
+        .situation-box {
+            background: #334155; padding: 20px; border-radius: 8px;
+            margin-bottom: 20px; line-height: 1.6; border-left: 5px solid #10b981;
+        }
+        .btn-group { display: flex; flex-direction: column; gap: 12px; }
+        button {
+            color: white; border: none; padding: 15px; border-radius: 8px;
+            cursor: pointer; text-align: left; font-size: 15px; transition: transform 0.1s;
+        }
+        button:active { transform: scale(0.99); }
+        .action-green { background: #059669; }
+        .action-green:hover { background: #10b981; }
+        .action-red { background: #b91c1c; }
+        .action-red:hover { background: #dc2626; }
+    </style>
+</head>
+<body>
+
+<div id="sim-container">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+        <h2 style="margin: 0; color: #38bdf8;" id="level-title">기후 대책 본부</h2>
+        <div style="font-weight:bold; background:#38bdf8; color:#0f172a; padding:4px 10px; border-radius:20px;" id="v-level">LV.1</div>
+    </div>
+    
+    <div class="main-dash">
+        <div class="metric">정부 가용 예산<span id="v-budget" style="color: #fbbf24;">1200억</span></div>
+        <div class="metric">기후 포인트 (CP)<span id="v-cp" style="color: #60a5fa;">0 CP</span></div>
+        <div class="metric">인류 생존 확률<span id="v-survival" style="color: #34d399;">100%</span></div>
+        <div class="metric" style="visibility:hidden;">계기판칸<span></span></div>
+    </div>
+
+    <p style="margin: 0 0 8px 0; font-size: 14px; color:#94a3b8; font-weight:bold;">⚠️ 4대 기후 위기 모니터링 (75% 돌파 시 치명적)</p>
+    <div class="threat-dash">
+        <div class="metric danger">극단적 폭염<span id="v-heatwave">40%</span></div>
+        <div class="metric danger">극단적 한파<span id="v-coldwave">30%</span></div>
+        <div class="metric danger">해수면 상승도<span id="v-sealevel">35%</span></div>
+        <div class="metric danger">생태계 파괴율<span id="v-eco">45%</span></div>
+    </div>
+
+    <div id="situation" class="situation-box">데이터 취합 중...</div>
+    <div id="choices" class="btn-group"></div>
+</div>
+
+<script type="module" src="/client-init.js"></script>
+
+</body>
+</html>

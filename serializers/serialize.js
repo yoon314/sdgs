@@ -2,23 +2,23 @@
 export class ClimateDataSerializer {
     static toStatusDTO(model) {
         return {
-            currentLevel: model.level,
-            finances: { remainingBudget_M: model.budget, scoreCP: model.climatePoints },
-            survivalRate: model.globalSurvival,
-            disasterMetrics: { ...model.threats }
+            timelineTurn: `${model.currentTurn} / ${model.maxTurns}`,
+            finances: { budget_M: model.budget, pointsCP: model.climatePoints },
+            humanSurvival_pct: model.globalSurvival,
+            climateIndicators: { ...model.threats }
         };
     }
 
-    static toFinalReport(model, outcomeMessage) {
+    static toFinalReport(model, summaryText) {
         return JSON.stringify({
-            game: "SDGs 13 Climate Action Simulator",
-            completedAt: new Date().toISOString(),
-            finalStatus: {
-                levelReached: model.level,
-                survivability: model.globalSurvival,
+            meta: "SDGs 13 Climate 15-Turn Simulator Result",
+            finalMetrics: {
+                turnsCompleted: model.currentTurn,
+                survivedRate: model.globalSurvival,
                 totalCP: model.climatePoints,
-                outcome: outcomeMessage
-            }
+                leftBudget: model.budget
+            },
+            gradeEvaluation: summaryText
         }, null, 2);
     }
 }

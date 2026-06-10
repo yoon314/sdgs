@@ -2,70 +2,94 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>SDGs 13 복합 기후위기 통제 시스템</title>
+    <title>SDGs 13 기후 통제 연합 본부</title>
     <style>
         body {
             margin: 0; background: #0f172a; color: #f8fafc;
-            font-family: system-ui, sans-serif;
+            font-family: 'Pretendard', system-ui, sans-serif;
             display: flex; justify-content: center; align-items: center; height: 100vh;
+            overflow: hidden;
         }
         #sim-container {
-            width: 750px; background: #1e293b; padding: 30px;
-            border-radius: 16px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
-            border: 1px solid #334155;
+            width: 900px; background: rgba(30, 41, 59, 0.95); padding: 40px;
+            border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.8);
+            border: 2px solid #334155; backdrop-filter: blur(10px);
         }
         .main-dash {
-            display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
-            background: #020617; padding: 15px; border-radius: 10px; margin-bottom: 20px;
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+            background: #020617; padding: 20px; border-radius: 15px; margin-bottom: 25px;
         }
+        
+        /* 💡 안내 가이드 박스 스타일 */
+        .info-guide-box {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid #475569;
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            font-size: 15px;
+            line-height: 1.6;
+            color: #cbd5e1;
+        }
+        .info-guide-box strong {
+            color: #f87171;
+            font-size: 16px;
+        }
+
         .threat-dash {
-            display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
-            background: #0f172a; padding: 12px; border-radius: 8px; margin-bottom: 25px;
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px;
+            background: rgba(15, 23, 42, 0.8); padding: 20px; border-radius: 12px; margin-bottom: 30px;
             border: 1px dashed #475569;
         }
-        .metric { font-size: 13px; color: #94a3b8; text-align: center;}
-        .metric span { font-size: 22px; font-weight: bold; color: #fff; display: block; margin-top: 5px; }
+        .metric { font-size: 16px; color: #94a3b8; text-align: center;}
+        .metric span { font-size: 32px; font-weight: 900; color: #fff; display: block; margin-top: 8px; }
         .danger span { color: #f87171; }
         .situation-box {
-            background: #334155; padding: 20px; border-radius: 8px;
-            margin-bottom: 20px; line-height: 1.6; border-left: 5px solid #10b981;
+            background: #334155; padding: 30px; border-radius: 12px;
+            margin-bottom: 30px; line-height: 1.5; border-left: 8px solid #38bdf8;
+            font-size: 22px; font-weight: 500; min-height: 100px;
         }
-        .btn-group { display: flex; flex-direction: column; gap: 12px; }
+        .btn-group { display: flex; flex-direction: column; gap: 15px; }
         button {
-            color: white; border: none; padding: 15px; border-radius: 8px;
-            cursor: pointer; text-align: left; font-size: 15px; transition: transform 0.1s;
+            color: white; border: none; padding: 25px; border-radius: 12px;
+            cursor: pointer; text-align: left; font-size: 20px; transition: all 0.2s;
         }
-        button:active { transform: scale(0.99); }
-        .action-green { background: #059669; }
-        .action-green:hover { background: #10b981; }
-        .action-red { background: #b91c1c; }
-        .action-red:hover { background: #dc2626; }
+        button:hover { transform: translateY(-3px); filter: brightness(1.2); }
+        button:active { transform: scale(0.98); }
+        .action-green { background: #065f46; border-bottom: 4px solid #047857; }
+        .action-red { background: #991b1b; border-bottom: 4px solid #b91c1c; }
+        .btn-group strong { font-size: 24px; margin-right: 10px; color: #fbbf24; }
     </style>
 </head>
 <body>
 
 <div id="sim-container">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-        <h2 style="margin: 0; color: #38bdf8;" id="level-title">기후 대책 본부</h2>
-        <div style="font-weight:bold; background:#38bdf8; color:#0f172a; padding:4px 10px; border-radius:20px;" id="v-level">LV.1</div>
+    <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:20px;">
+        <h2 style="margin: 0; color: #38bdf8; font-size: 36px; letter-spacing: -1px;" id="level-title">기후 데이터 로딩 중...</h2>
+        <div style="font-size: 24px; font-weight:900; background:#38bdf8; color:#0f172a; padding:8px 20px; border-radius:12px;" id="v-level">1 / 15 턴</div>
     </div>
     
     <div class="main-dash">
-        <div class="metric">정부 가용 예산<span id="v-budget" style="color: #fbbf24;">1200억</span></div>
-        <div class="metric">기후 포인트 (CP)<span id="v-cp" style="color: #60a5fa;">0 CP</span></div>
-        <div class="metric">인류 생존 확률<span id="v-survival" style="color: #34d399;">100%</span></div>
-        <div class="metric" style="visibility:hidden;">계기판칸<span></span></div>
+        <div class="metric">국가 예산<span id="v-budget" style="color: #fbbf24;">1500억</span></div>
+        <div class="metric">대응 포인트<span id="v-cp" style="color: #60a5fa;">0 CP</span></div>
+        <div class="metric">생존 확률<span id="v-survival" style="color: #34d399;">100%</span></div>
     </div>
 
-    <p style="margin: 0 0 8px 0; font-size: 14px; color:#94a3b8; font-weight:bold;">⚠️ 4대 기후 위기 모니터링 (75% 돌파 시 치명적)</p>
+    <div class="info-guide-box">
+        ℹ️ <strong>기후 위기 지표 가이드:</strong> 아래 4대 수치는 현재 지구에 닥친 재앙의 위험도입니다. 
+        <span style="color: #a7f3d0;">0%에 가까울수록 안전</span>하며, <strong>100%에 도달하면 제어가 불가능</strong>해집니다. 
+        평균 위험도가 50%를 넘으면 매 턴 우측 상단의 <u>'인류 생존 확률'이 급격히 감소</u>합니다!
+    </div>
+
+    <p style="margin: 0 0 8px 0; font-size: 14px; color:#94a3b8; font-weight:bold;">📊 글로벌 4대 기후재난 실시간 위험도 (상승을 억제하십시오)</p>
     <div class="threat-dash">
-        <div class="metric danger">극단적 폭염<span id="v-heatwave">40%</span></div>
-        <div class="metric danger">극단적 한파<span id="v-coldwave">30%</span></div>
-        <div class="metric danger">해수면 상승도<span id="v-sealevel">35%</span></div>
-        <div class="metric danger">생태계 파괴율<span id="v-eco">45%</span></div>
+        <div class="metric danger">극단적 폭염 위기<span id="v-heatwave">30%</span></div>
+        <div class="metric danger">극단적 한파 위기<span id="v-coldwave">30%</span></div>
+        <div class="metric danger">해수면 상승 위험<span id="v-sealevel">30%</span></div>
+        <div class="metric danger">생태계 파괴 지수<span id="v-eco">30%</span></div>
     </div>
 
-    <div id="situation" class="situation-box">데이터 취합 중...</div>
+    <div id="situation" class="situation-box">시스템 부팅 중...</div>
     <div id="choices" class="btn-group"></div>
 </div>
 

@@ -14,7 +14,7 @@
             width: 900px; background: rgba(30, 41, 59, 0.95); padding: 40px;
             border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.8);
             border: 2px solid #334155; backdrop-filter: blur(10px);
-            position: relative; /* 📋 등급 기준 팝업 배치를 위한 기준점 */
+            position: relative;
         }
         .main-dash {
             display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
@@ -60,7 +60,6 @@
         .action-red { background: #991b1b; border-bottom: 4px solid #b91c1c; }
         .btn-group strong { font-size: 24px; margin-right: 10px; color: #fbbf24; }
 
-        /* 📋 클릭 시 나오는 등급 가이드 레이어 팝업 스타일 */
         .grade-btn {
             background: #1e293b; color: #38bdf8; padding: 8px 16px; border-radius: 12px;
             font-size: 16px; font-weight: bold; cursor: pointer; border: 1px solid #38bdf8;
@@ -69,7 +68,7 @@
         .grade-btn:hover { background: #38bdf8; color: #0f172a; transform: translateY(-2px); }
 
         .grade-overlay-box {
-            display: none; position: absolute; top: 100px; right: 40px; width: 440px;
+            display: none; position: absolute; top: 100px; right: 40px; width: 460px;
             background: #1e293b; border: 2px solid #fbbf24; border-radius: 16px;
             padding: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.7); z-index: 100;
         }
@@ -91,15 +90,18 @@
     </div>
 
     <div id="grade-info-menu" class="grade-overlay-box">
-        <h3>📊 20턴 정상 종료 시 최종 등급 평정 기준</h3>
+        <h3>📊 20턴 완료 시 최종 등급 평가 기준</h3>
         <div class="grade-row">
-            <span class="grade-label" style="color:#facc15;">S 등급:</span> 생존율 99% 이상 + CP 1250 이상
+            <span class="grade-label" style="color:#facc15;">S 등급:</span> 생존율 100% 이상 + CP 1400 이상<br>
+            <span style="color:#f87171; font-size:12px; font-weight:bold;">⚠️ [핵심 조건] 4대 재난 지표가 각각 모두 10% 이하 (완벽 통제)</span>
         </div>
         <div class="grade-row">
-            <span class="grade-label" style="color:#60a5fa;">A 등급:</span> 생존율 85% 이상 + CP 950 이상
+            <span class="grade-label" style="color:#60a5fa;">A 등급:</span> 생존율 85% 이상 + CP 1000 이상<br>
+            <span style="color:#fbcfe8; font-size:12px;">⚠️ [지표 조건] 4대 재난 지표가 각각 모두 15% 이하 (시작점 방어)</span>
         </div>
         <div class="grade-row">
-            <span class="grade-label" style="color:#34d399;">B 등급:</span> 생존율 65% 이상 + CP 450 이상
+            <span class="grade-label" style="color:#34d399;">B 등급:</span> 생존율 65% 이상 + CP 450 이상<br>
+            <span style="color:#94a3b8; font-size:12px;">⚠️ [지표 조건] 4대 재난 지표가 각각 모두 50% 미만 (위험선 방어)</span>
         </div>
         <div class="grade-row">
             <span class="grade-label" style="color:#cbd5e1;">C 등급:</span> 생존율 45% 이상 + CP 150 이상
@@ -108,7 +110,7 @@
             <span class="grade-label" style="color:#a8a29e;">E 등급:</span> 생존율 20% 이상 또는 CP -500 이상
         </div>
         <div class="grade-row">
-            <span class="grade-label" style="color:#ef4444;">F 등급:</span> 조건 미달 및 지표 100% 도달 시 발생
+            <span class="grade-label" style="color:#ef4444;">F 등급:</span> 상기 조건 미달 및 플레이 중 한 지표라도 100% 도달 시 즉시 종료
         </div>
         <button onclick="toggleGradeMenu()" style="padding: 10px; font-size: 14px; background: #334155; border: none; width: 100%; border-radius: 8px; text-align: center; margin-top: 10px; color: white; cursor: pointer;">가이드 창 닫기</button>
     </div>
@@ -245,7 +247,6 @@
 </script>
 
 <script>
-    // 💡 토글 함수는 일반 전역 스코프에서 처리하도록 따로 분리
     function toggleGradeMenu() {
         const menu = document.getElementById('grade-info-menu');
         if (menu.style.display === 'block') {

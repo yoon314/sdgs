@@ -56,7 +56,7 @@ export class ClimateSimulationService {
         const sea = this.model.threats.seaLevel;
         const eco = this.model.threats.ecoDestruction;
 
-        // 👑 [S등급 조건] CP 1250 이상 + 생존율 99% 이상 + 4대 재난 각각 10% 이하 (완벽 통제)
+        // 👑 [S등급 조건] CP 1400 이상 + 생존율 100% 이상 + 4대 재난 각각 10% 이하 (완벽 통제)
         if (s >= 100 && cp >= 1400 && h <= 10 && c <= 10 && sea <= 10 && eco <= 10) {
             return { 
                 grade: "S", 
@@ -66,7 +66,7 @@ export class ClimateSimulationService {
             };
         }
         
-        // 👍 [A등급 조건] CP 950 이상 + 생존율 85% 이상 + 4대 재난 각각 25% 이하 (시작점 방어)
+        // 👍 [A등급 조건] CP 1000 이상 + 생존율 85% 이상 + 4대 재난 각각 15% 이하 (시작점 방어)
         if (s >= 85 && cp >= 1000 && h <= 15 && c <= 15 && sea <= 15 && eco <= 15) {
             return { 
                 grade: "A", 
